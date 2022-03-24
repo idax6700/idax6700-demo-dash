@@ -35,6 +35,15 @@ fig_employee = px.bar(order,
 fig_employee.update_traces(texttemplate='%{text:.2s}', textposition='outside')
 fig_employee.update_layout(uniformtext_minsize=8, uniformtext_mode='hide', xaxis_tickangle=45)
 
+fig_orderfigure = px.bar(order, 
+    x='productname', y='total', 
+    color='type', text='total', title='Sales by Products',
+    hover_data=[],
+    labels={'total':'Total sales', 'type':'Product Type', 'productname':'Products'})
+fig_orderfigure.update_traces(texttemplate='%{text:.2s}', textposition='outside')
+fig_orderfigure.update_layout(uniformtext_minsize=8, uniformtext_mode='hide', xaxis_tickangle=45)
+
+
 # ***************************************
 # Activate the app
 # ***************************************
@@ -48,66 +57,46 @@ app = dash_app.server
 # ***************************************
 dash_app.layout = html.Div(
     children=[
-        html.Div(className='row',
-                children=[
-                    html.Div(className='four columns div-user-controls',
-                            children=[
-                                html.H2('Sales dashboard'),
-                                html.P('Select filters from dropdown'),
+        html.Div(className='eight columns div-for-charts bg-grey',
+            children=[
+                dcc.Graph(id="sales_employee", figure=fig_employee),
+                dcc.Graph(id="sales_productname", figure=fig_orderfigure)])
 
-                    html.Div(children="Month", className="menu-title"),
-                            dcc.Dropdown(
-                                id='drop_month',
-                                options=[{'label':selectmonth, 'value':selectmonth} for selectmonth in df_month['monthnames']],
-                            ),
-                    html.Div(children="Year", className="menu-title"),
-                            dcc.Dropdown(
-                                id='drop_year',
-                                options=[{'label':selectyear, 'value':selectyear} for selectyear in df_year]
-                            ),
-                            ]
-                    ),
-                    html.Div(className='eight columns div-for-charts bg-grey',
-                            children=[
-                                dcc.Graph(id="sales_employee", figure=fig_employee)
-                            ]
-                    ),
-                ]
-            )
-        ]
-)
+            
+    ]
+        )
 
 # ***************************************
 # Callbacks
 # ***************************************
 # Output er diagrammet
 # Input er DropDown
-@dash_app.callback(Output('sales_employee', 'figure'),
-              [Input('drop_month', 'value')],
-              [Input('drop_year', 'value')])
+# @dash_app.callback(Output('sales_employee', 'figure'),
+#               [Input('drop_month', 'value')],
+#               [Input('drop_year', 'value')])
 
-def update_graph(drop_month, drop_year):
-    if drop_year:
-        if drop_month:
-            # Data i både drop_month og drop_year
-            order_fig1 = order.loc[(order['orderyear'] == drop_year) & (order['ordermonth'] == drop_month)]
-        else:
-            # Data i drop_year. men ikke drop_month
-            order_fig1 = order.loc[order['orderyear'] == drop_year]
-    else:
-        if drop_month:
-            # Data i drop_month, men ikke drop_year
-            order_fig1 = order.loc[order['ordermonth'] == drop_month]
-        else:
-            # Ingen data - ikke noget valgt
-            order_fig1 = order
+# def update_graph(drop_month, drop_year):
+#     if drop_year:
+#         if drop_month:
+#             # Data i både drop_month og drop_year
+#             order_fig1 = order.loc[(order['orderyear'] == drop_year) & (order['ordermonth'] == drop_month)]
+#         else:
+#             # Data i drop_year. men ikke drop_month
+#             order_fig1 = order.loc[order['orderyear'] == drop_year]
+#     else:
+#         if drop_month:
+#             # Data i drop_month, men ikke drop_year
+#             order_fig1 = order.loc[order['ordermonth'] == drop_month]
+#         else:
+#             # Ingen data - ikke noget valgt
+#             order_fig1 = order
         
-    return {'data':[go.Bar(
-        x = order_fig1['productname'],
-        y = order_fig1['total']
-            )
-        ]
-    }
+#     return {'data':[go.Bar(
+#         x = order_fig1['emp_name'],
+#         y = order_fig1['total'], title = 'Employee sales'
+#             )
+#         ]
+#     }
 
 # ***************************************
 # Run the app
