@@ -2,10 +2,12 @@
 # Imports
 # ***************************************
 # Dash
+from turtle import color
 import dash
 from dash import html
 from dash import dcc
 from dash.dependencies import Input, Output
+from matplotlib.pyplot import colorbar, polar
 
 # Div.
 import pandas as pd
@@ -36,8 +38,9 @@ fig_employee.update_traces(texttemplate='%{text:.2s}', textposition='outside')
 fig_employee.update_layout(uniformtext_minsize=8, uniformtext_mode='hide', xaxis_tickangle=45)
 
 fig_orderfigure = px.bar(order, 
+    
     x='productname', y='total', 
-    color='type', text='total', title='Sales by Products',
+    color='type', text='total', title='Sales by Products', 
     hover_data=[],
     labels={'total':'Total sales', 'type':'Product Type', 'productname':'Products'})
 fig_orderfigure.update_traces(texttemplate='%{text:.2s}', textposition='outside')
